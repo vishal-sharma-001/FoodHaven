@@ -1,12 +1,12 @@
 import { useEffect, useState} from 'react'
 import {restaurantMenuApi} from './constants'
 
-export default useResturantMenu = ({resid}) =>{
+export default useResturantMenu = (prop) =>{
     const [resInfo, setResInfo] = useState(null)
 
     useEffect(()=>{
         
-        fetch( restaurantMenuApi + resid +"&catalog_qa=undefined&submitAction=ENTER")
+        fetch( restaurantMenuApi + prop +"&catalog_qa=undefined&submitAction=ENTER")
         .then((resp)=>{
             if(!resp.ok)
                 return new Error("Failed ot fetch data"+ resp.statusText)
@@ -14,7 +14,7 @@ export default useResturantMenu = ({resid}) =>{
                 return resp.json()
         })
         .then((res)=>{
-            setResInfo(res)
+            setResInfo(res?.data?.cards)
         })
         .catch((err)=>{
             console.log("Fetching data failed. " + err)

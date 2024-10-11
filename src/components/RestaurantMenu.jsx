@@ -1,46 +1,30 @@
 import { useParams} from 'react-router-dom'
 import useRestaurantMenu from '../utils/useRestaurantMenu'
+import { IoMdArrowDropdown } from "react-icons/io";
+import ItemsList from './ItemsList';
+
 
 export default RestaurantMenu = () => {
     const param = useParams()
-    console.log(param)
     const data = useRestaurantMenu(param.resid)  //custom hook
-    console.log(data)
 
     if (data == null)
         return <></>
-
-    const menu = data[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards;
+    const menu = data[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards.filter((category) => {return category.card.card.itemCards != null})
     return (
-        <div className="res-menu">
-            <h2>{data[2]?.card?.card.info.name}</h2>
-            <div className="food-menu">
-                {menu ? menu.map((categ, idx) => {
-                    const categories = categ?.card?.card;
-                    
-                    return (
-                        categories && categories.title ? (
-                            <div key={idx}> {/* Use key prop here instead of id */}
-                                <h4>{categories.title}</h4>
-                                <ul>
-                                    {categories?.carousel 
-                                        ? categories.carousel.map((menuItem) => (
-                                            <li key={menuItem.title}> {/* Ensure this is unique */}
-                                                &emsp;{menuItem.title}
-                                            </li>
-                                        )) 
-                                        : categories?.itemCards?.map((menuItem) => (
-                                            <li key={menuItem.card.info.id}> {/* Use a unique key */}
-                                                &emsp;{menuItem.card.info.name}
-                                            </li>
-                                        ))
-                                    }
-                                </ul>
-                            </div>
-                        ) : null
-                    );
-                }) : null}
-            </div>
+        <div className="menu-ctr mx-auto w-6/12 text-center">
+            <h2 className="text-3xl font-extrabold">{data[2]?.card?.card.info.name}</h2>
+            {menu && menu.map((categ, idx) =>(                        
+                <div key={idx}>
+                    <div className="border-solid border-2 shadow-lg my-4 p-3 flex justify-between">
+                        <span className="font-semibold text-xl">{categ?.card?.card?.title + "(" + categ?.card?.card?.itemCards.length + ")"}</span> <span className="text-xl font-semibold mt-2"> <IoMdArrowDropdown /> </span>
+                    </div>
+                    {categ?.card?.card?.itemCards?.map((menuItem) => (
+                            <ItemsList key={menuItem.card.info.id} prop={menuItem?.card}/>
+                        ))
+                    }
+                </div>
+            ))}
         </div>
     );
 }
