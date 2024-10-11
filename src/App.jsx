@@ -15,6 +15,7 @@ const Groceries = lazy(()=> import ("./components/Groceries"))
 
 const App = () =>{
     const [resData, setResData] = useState([])   // Note - this is just array destructuring
+    const [filteredData, setFilteredData] = useState([])
     useEffect(() => {
         fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=28.7040592&lng=77.10249019999999&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING")
             .then((res) => {
@@ -25,15 +26,15 @@ const App = () =>{
             })
             .then((res) => {
                 setResData(res?.data?.cards)
+                setFilteredData(res?.data?.cards)
             })
             .catch((err) => {
                 console.log("Fetching data failed. " + err)
             })
     }, [])
-
     return(
-        <ResContext.Provider value={resData}>
-            <div>
+        <ResContext.Provider value={{resData: resData, filteredData, setFilteredData}}>
+            <div className="min-w-[1800px] min-h-[1000px] overflow-hidden">
                 <Header />
                 {/* TO HAVE HEADER ALWAYS ON TOP REGARDLESS OF THE PAGE WE CAN CONDITIONALLY RENDER THE CHILD COMPONENTS */}
                     <Outlet />

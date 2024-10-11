@@ -3,11 +3,13 @@ import useRestaurantMenu from '../utils/useRestaurantMenu'
 
 export default RestaurantMenu = () => {
     const param = useParams()
-
+    console.log(param)
     const data = useRestaurantMenu(param.resid)  //custom hook
+    console.log(data)
 
     if (data == null)
         return <></>
+
     const menu = data[4]?.groupedCard?.cardGroupMap?.REGULAR?.cards;
     return (
         <div className="res-menu">

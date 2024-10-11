@@ -5,6 +5,7 @@ export default useResturantMenu = ({resid}) =>{
     const [resInfo, setResInfo] = useState(null)
 
     useEffect(()=>{
+        
         fetch( restaurantMenuApi + resid +"&catalog_qa=undefined&submitAction=ENTER")
         .then((resp)=>{
             if(!resp.ok)
@@ -13,7 +14,7 @@ export default useResturantMenu = ({resid}) =>{
                 return resp.json()
         })
         .then((res)=>{
-            setResInfo(res.data.cards)
+            setResInfo(res)
         })
         .catch((err)=>{
             console.log("Fetching data failed. " + err)

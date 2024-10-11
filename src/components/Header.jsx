@@ -1,4 +1,3 @@
-import Logo from '../utils/images/logo';
 import { IoLocationOutline } from "react-icons/io5";
 import { FaSearch } from "react-icons/fa";
 import { BiSolidOffer } from "react-icons/bi";
@@ -6,28 +5,36 @@ import { IoIosHelpBuoy } from "react-icons/io";
 import { FaRegUserCircle } from "react-icons/fa";
 import { FaShoppingCart } from "react-icons/fa";
 import { Link } from 'react-router-dom'
+import Logo from '../utils/images/logo.png';
 
 import { useEffect, useState, useContext } from 'react' 
 import ResContext from "../utils/ResContext";
 
 export default Header = () =>{
-    const resData =  useContext(ResContext)
-
-
+    const {resData, filteredData, setFilteredData} =  useContext(ResContext)
     const [searchFilter, setSearchFilter] = useState("")
     
-    // useEffect(() =>{    
-    //     if(searchFilter == "")
-    //         setFilteredRes(resData)
 
-    //     else
-    //         setFilteredRes(resData.filter((res)=>{
-    //             return res.info.name.toLowerCase().includes(searchFilter.toLowerCase())
-    //         }))
-    // },[searchFilter])
+    const  restaurants = filteredData ? filteredData[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants: null
+    useEffect(() =>{    
+        if(searchFilter == "")
+            setFilteredData(resData)
+        
+        else{
+            console.log(restaurants.filter((res)=>{
+                return res.info.name.toLowerCase().includes(searchFilter.toLowerCase())
+            }))
+            
+            setFilteredData( restaurants && restaurants.filter((res)=>{
+                return res.info.name.toLowerCase().includes(searchFilter.toLowerCase())
+            }))
+        }
+    },[searchFilter])
+    
+    // console.log(restaurants)
 
     return (
-        <div className='flex justify-start items-baseline px-10 pb-4 shadow-md'>
+        <div className='flex justify-start items-baseline px-10 pb-4 shadow-md min-w-[1800px] overflow-hidden'>
             <div className='mr-20 relative top-2'>
                 <img className='object-contain w-[200px] h-auto max-w-full' src={Logo} alt='logo' />
             </div>
