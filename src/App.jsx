@@ -10,6 +10,7 @@ import Help from './components/Help';
 import ErrorPage from './components/ErrorPage';
 import RestaurantMenu from './components/RestaurantMenu'
 import ResContext from './utils/ResContext';
+import Cart from './components/Cart';
 
 const Groceries = lazy(()=> import ("./components/Groceries")) 
 
@@ -67,6 +68,10 @@ const appRouter = createBrowserRouter([
             {
                 path: '/groceries',
                 element: <Suspense fallback={<div></div>}> <Groceries/> </Suspense>,                
+            },
+            {
+                path: '/cart',
+                element: <Cart/>
             }
         ]
     }

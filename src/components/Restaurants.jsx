@@ -8,7 +8,6 @@ import ResContext from "../utils/ResContext";
 
 export const RestaurantCard = ({prop}) => {
     const res = prop
-    console.log(res)
     return (
         <div key={res?.id} className=" w-80 h-pxflex flex-col p-0 m-5 shadow-lg rounded-md transition-transform transform hover:scale-105 hover:bg-slate-100 duration-300 ease-in-out">
             <img src={"https://media-assets.swiggy.com/swiggy/image/upload/" + res?.cloudinaryImageId}  className="" />
@@ -70,8 +69,8 @@ export default Restaurants = () => {
             </div>
             <div className='restaurants-card-ctr flex flex-wrap'>
                 {
-                    res ? res.map((data) => {
-                            return <Link to={"/menu/" + data?.info?.id}> {data?.info?.avgRating > 4 ?  <TopRatedRestaurantCard key={data?.info?.id} prop={data?.info} /> : <RestaurantCard key={data?.info?.id} prop={data?.info} />}</Link>
+                    res ? res.map((data, idx) => {
+                            return <Link to={"/menu/" + data?.info?.id} key={data?.info?.id}> {data?.info?.avgRating > 4 ?  <TopRatedRestaurantCard key={data?.info?.id} prop={data?.info} /> : <RestaurantCard key={data?.info?.id} prop={data?.info} />}</Link>
                     }) : null
                 }
             </div>

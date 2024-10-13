@@ -1,5 +1,4 @@
 export default ItemsList = ({prop}) => {
-    console.log(prop)
     return (
         <>
             <div className="flex justify-between p-3">
