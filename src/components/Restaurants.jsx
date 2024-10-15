@@ -3,20 +3,21 @@ import { IoChevronDownOutline } from "react-icons/io5";
 import { MdStars } from "react-icons/md";
 import { useState, useContext, useEffect} from 'react';
 import {Link} from 'react-router-dom';
-import ResContext from "../utils/ResContext";
+import { useDispatch, useSelector } from "react-redux";
+import {addFilteredRestaurants } from '../utils/restaurantSlice';
 
 
 export const RestaurantCard = ({prop}) => {
     const res = prop
     return (
-        <div key={res?.id} className=" w-80 h-pxflex flex-col p-0 m-5 shadow-lg rounded-md transition-transform transform hover:scale-105 hover:bg-slate-100 duration-300 ease-in-out">
-            <img src={"https://media-assets.swiggy.com/swiggy/image/upload/" + res?.cloudinaryImageId}  className="" />
+        <div key={res?.id} className="w-72 h-80 flex-col p-0 m-5 shadow-lg rounded-md transition-transform transform hover:bg-slate-200 duration-300 ease-in-out">
+            <img src={"https://media-assets.swiggy.com/swiggy/image/upload/" + res?.cloudinaryImageId}  className="w-72 h-44 object-cover object-top rounded-xl" />
             <div className="px-2">
-                <h4>{(res?.aggregatedDiscountInfoV3?.header || '.') + (res?.aggregatedDiscountInfoV3?.subHeader || '')}</h4>
-                <p id='res-name'>{res?.name}</p>
-                <p id="rating-time"><MdStars id='res-rating' /> {res?.avgRating} • {res?.sla.deliveryTime} min</p>
-                <p id="cuisines">{res?.cuisines.join(', ')}</p>
-                <p id="locality"> {res?.locality}</p>
+                <h4 className="overflow-hidden absolute left-2 top-36 text-white font-extrabold text-lg">{(res?.aggregatedDiscountInfoV3?.header || '') + (res?.aggregatedDiscountInfoV3?.subHeader || '')}</h4>
+                <p className='overflow-hidden font-semibold py-1'>{res?.name}</p>
+                <p className="overflow-hidden rating-time font-medium"> <MdStars className='text-green-900 text-2xl pb-1 inline-block' /> {res?.avgRating} • {res?.sla.deliveryTime} min</p>
+                <p className="overflow-hidden cuisines font-normal text-sm text-gray-500">{res?.cuisines.join(', ')}</p>
+                <p className="overflow-hidden locality font-normal text-sm text-gray-500"> {res?.locality}</p>
             </div>
         </div>
     )
@@ -32,9 +33,9 @@ export const TopRated = (RestaurantCard) =>{
         //each component returns some JSX
         return (
             <div>
-                <label className="absolute z-10 ml-5 text-white bg-black">Top Rated</label>
+                <label className="absolute z-10 ml-5 text-white text-sm bg-black rounded-lg p-1 ">Top Rated</label>
                 <RestaurantCard prop = {prop}/>
-            </div>    
+            </div>
         )
     }   
 }
@@ -43,16 +44,21 @@ export const TopRated = (RestaurantCard) =>{
 const  TopRatedRestaurantCard  = TopRated(RestaurantCard)
 
 export default Restaurants = () => {
+    
+    const dispatch = useDispatch()
+    const filteredData = useSelector((store.restaurants.filteredRestaurantsList))
+    const resData = useSelector((store.restaurants.restaurantsList))
 
-    const {resData, filteredData, setFilteredData} = useContext(ResContext)
+
     const [is4PlusFilter, setIs4PlusFilter] = useState(false)
+
+    const resRating4Plus = () => {
+        dispatch(addFilteredRestaurants( filteredData && filteredData[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants.filter((r) => (r?.info?.avgRating > 4.2))))
+        setIs4PlusFilter(!is4PlusFilter)
+    }
 
     const res = filteredData ? filteredData[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants : null
 
-    const resRating4Plus = () => {
-        setFilteredData( res && res.filter((r) => (r?.info?.avgRating > 4.2)))
-        setIs4PlusFilter(!is4PlusFilter)
-    }
     return (
         <div className='restaurants-ctr py-10'>
             <h3 className="font-bold text-xl">Restaurants with online food delivery in Bangalore</h3>
@@ -70,7 +76,7 @@ export default Restaurants = () => {
             <div className='restaurants-card-ctr flex flex-wrap'>
                 {
                     res ? res.map((data, idx) => {
-                            return <Link to={"/menu/" + data?.info?.id} key={data?.info?.id}> {data?.info?.avgRating > 4 ?  <TopRatedRestaurantCard key={data?.info?.id} prop={data?.info} /> : <RestaurantCard key={data?.info?.id} prop={data?.info} />}</Link>
+                            return <Link to={"/menu/" + data?.info?.id} key={data?.info?.id}> {data?.info?.avgRating > 4.5 ?  <TopRatedRestaurantCard key={data?.info?.id} prop={data?.info} /> : <RestaurantCard key={data?.info?.id} prop={data?.info} />}</Link>
                     }) : null
                 }
             </div>

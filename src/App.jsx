@@ -11,12 +11,15 @@ import ErrorPage from './components/ErrorPage';
 import RestaurantMenu from './components/RestaurantMenu'
 import ResContext from './utils/ResContext';
 import Cart from './components/Cart';
+import store from './utils/store';
+import { Provider } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { addRestaurants, addFilteredRestaurants } from './utils/restaurantSlice';
 
 const Groceries = lazy(()=> import ("./components/Groceries")) 
 
 const App = () =>{
-    const [resData, setResData] = useState([])   // Note - this is just array destructuring
-    const [filteredData, setFilteredData] = useState([])
+    const dispatch = useDispatch()
     useEffect(() => {
         fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=28.7040592&lng=77.10249019999999&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING")
             .then((res) => {
@@ -26,21 +29,20 @@ const App = () =>{
                     throw new Error("Network response was not ok " + res.statusText);
             })
             .then((res) => {
-                setResData(res?.data?.cards)
-                setFilteredData(res?.data?.cards)
+                dispatch(addRestaurants(res?.data?.cards))
+                dispatch(addFilteredRestaurants(res?.data?.cards))
             })
             .catch((err) => {
                 console.log("Fetching data failed. " + err)
             })
     }, [])
+    
     return(
-        <ResContext.Provider value={{resData: resData, filteredData, setFilteredData}}>
-            <div className="min-w-[1800px] min-h-[1000px] overflow-hidden">
-                <Header />
-                {/* TO HAVE HEADER ALWAYS ON TOP REGARDLESS OF THE PAGE WE CAN CONDITIONALLY RENDER THE CHILD COMPONENTS */}
-                    <Outlet />
-            </div>
-        </ResContext.Provider>
+        <div className="min-w-[1800px] min-h-[1000px] overflow-hidden pt-[80px]">
+            <Header />
+            {/* TO HAVE HEADER ALWAYS ON TOP REGARDLESS OF THE PAGE WE CAN CONDITIONALLY RENDER THE CHILD COMPONENTS */}
+                <Outlet />
+        </div>
    )
 }
 const appRouter = createBrowserRouter([
@@ -77,4 +79,8 @@ const appRouter = createBrowserRouter([
     }
 ])
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<RouterProvider router={appRouter}/>)
+root.render(
+    <Provider store={store}>
+        <RouterProvider router={appRouter}/>
+    </Provider>    
+)
