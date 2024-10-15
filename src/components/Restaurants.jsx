@@ -4,7 +4,7 @@ import { MdStars } from "react-icons/md";
 import { useState, useContext, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import {addFilteredRestaurants } from '../utils/restaurantSlice';
+import { addRestaurants, addFilteredRestaurants, toggleFilter} from '../utils/restaurantSlice';
 
 
 export const RestaurantCard = ({prop}) => {
@@ -46,36 +46,34 @@ const  TopRatedRestaurantCard  = TopRated(RestaurantCard)
 export default Restaurants = () => {
     
     const dispatch = useDispatch()
-    const filteredData = useSelector((store.restaurants.filteredRestaurantsList))
-    const resData = useSelector((store.restaurants.restaurantsList))
+    const filteredData = useSelector((store)=>(store.restaurants.filteredRestaurantsList))
+    const resData = useSelector((store)=>(store.restaurants.restaurantsList))
 
 
-    const [is4PlusFilter, setIs4PlusFilter] = useState(false)
+    const activeFilters = useSelector((store) => store.restaurants.activeFilters); // Get active filters from Redux
 
-    const resRating4Plus = () => {
-        dispatch(addFilteredRestaurants( filteredData && filteredData[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants.filter((r) => (r?.info?.avgRating > 4.2))))
-        setIs4PlusFilter(!is4PlusFilter)
-    }
-
-    const res = filteredData ? filteredData[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants : null
+    // Function to determine the button class based on filter state
+    const getButtonClass = (filterName) => {
+        return activeFilters[filterName] ? 'btn-active' : 'btn'; // Apply active class if the filter is active
+    };
 
     return (
         <div className='restaurants-ctr py-10'>
             <h3 className="font-bold text-xl">Restaurants with online food delivery in Bangalore</h3>
             <div className='filters py-7 flex justify-start'>
-            <button className='btn'>Filter <CiSliderHorizontal className="text-l m-2"/></button>
-            <button className='btn'>Sort By <IoChevronDownOutline className="text-l m-2"/></button>
-            <button className='btn'>Fast Delivery</button>
-            <button className='btn'>New</button>
-            <button className='btn' onClick={resRating4Plus}> Ratings 4.0+</button>
-            <button className='btn'>Pure Veg</button>
-            <button className='btn'>Offers</button>
-            <button className='btn'>Rs. 300-Rs. 600</button>
-            <button className='btn'>Less than Rs. 300</button>
+                <button className='btn'>Filter <CiSliderHorizontal className="text-l m-2" /></button>
+                <button className='btn'>Sort By <IoChevronDownOutline className="text-l m-2" /></button>
+                <button className={getButtonClass('fastDelivery')} onClick={() => dispatch(toggleFilter('fastDelivery'))}> Fast Delivery </button>
+                <button className={getButtonClass('new')} onClick={() => dispatch(toggleFilter('new'))}> New </button>
+                <button className={getButtonClass('rating4Plus')} onClick={() => dispatch(toggleFilter('rating4Plus'))}>Ratings 4.0+</button>
+                <button className={getButtonClass('pureVeg')} onClick={() => dispatch(toggleFilter('pureVeg'))}> Pure Veg </button>
+                <button className={getButtonClass('offers')} onClick={() => dispatch(toggleFilter('offers'))}> Offers </button>
+                <button className={getButtonClass('priceRange300To600')} onClick={() => dispatch(toggleFilter('priceRange300To600'))}> Rs. 300-Rs. 600 </button>
+                <button className={getButtonClass('priceRangelessThan300')} onClick={() => dispatch(toggleFilter('priceRangelessThan300'))}> Less than Rs. 300 </button>
             </div>
             <div className='restaurants-card-ctr flex flex-wrap'>
                 {
-                    res ? res.map((data, idx) => {
+                    filteredData ? filteredData.map((data, idx) => {
                             return <Link to={"/menu/" + data?.info?.id} key={data?.info?.id}> {data?.info?.avgRating > 4.5 ?  <TopRatedRestaurantCard key={data?.info?.id} prop={data?.info} /> : <RestaurantCard key={data?.info?.id} prop={data?.info} />}</Link>
                     }) : null
                 }

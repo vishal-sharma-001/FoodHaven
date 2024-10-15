@@ -15,7 +15,6 @@ import store from './utils/store';
 import { Provider } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { addRestaurants, addFilteredRestaurants } from './utils/restaurantSlice';
-
 const Groceries = lazy(()=> import ("./components/Groceries")) 
 
 const App = () =>{
@@ -30,7 +29,7 @@ const App = () =>{
             })
             .then((res) => {
                 dispatch(addRestaurants(res?.data?.cards))
-                dispatch(addFilteredRestaurants(res?.data?.cards))
+                dispatch(addFilteredRestaurants(res?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants))
             })
             .catch((err) => {
                 console.log("Fetching data failed. " + err)

@@ -14,16 +14,16 @@ import ResContext from "../utils/ResContext";
 
 export default Header = () =>{
     const dispatch = useDispatch()
-    const filteredData = useSelector((store.restaurants.filteredRestaurantsList))
-    const resData = useSelector((store.restaurants.restaurantsList))
-    
+    const filteredData = useSelector((store) => (store.restaurants.filteredRestaurantsList))
+    const resData = useSelector((store) => (store.restaurants.restaurantsList))
+
     const [searchFilter, setSearchFilter] = useState("")
     useEffect(() =>{    
         if(searchFilter == "")
-            dispatch(addFilteredRestaurants(resData))
+            dispatch(addFilteredRestaurants(resData[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants))
         
         else{
-            dispatch(addFilteredRestaurants(filteredData.filter((res)=>{
+            dispatch(addFilteredRestaurants(resData[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants.filter((res)=>{
                 return res.info.name.toLowerCase().includes(searchFilter.toLowerCase())
             })))
         }

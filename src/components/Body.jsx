@@ -4,6 +4,7 @@ import { useState, useContext, useEffect} from 'react';
 import ResContext from "../utils/ResContext";
 import useOnlineStatus from '../utils/useOnlineStatus';
 import Restaurants from "./Restaurants";
+import { useSelector } from "react-redux";
 
 export default Body =() =>{
     const onlinestatus = useOnlineStatus()
@@ -23,8 +24,7 @@ export default Body =() =>{
 }
 
 export const FoodSuggestions = () => {
-    const {resData} = useContext(ResContext)
-
+    const resData = useSelector((store)=>(store.restaurants.restaurantsList))
     const leftCarousal = () => {
         
     }
